@@ -1,6 +1,3 @@
-// We need to write a program in C for the Sieve of Eratosthenes algorithm to find all prime numbers less than or equal to a given integer n.
-// need two versions one that is non cache friendly and one that is cache friendly
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
@@ -8,6 +5,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+// Helper function to mark multiples of a number as composite (not prime)
 static inline long mark(bool composite[], long i, long step, long limit)
 {
     for (long j = i; j <= limit; j += step)
@@ -17,6 +15,7 @@ static inline long mark(bool composite[], long i, long step, long limit)
     return i;
 }
 
+// Cache Unfriendly Sieve of Eratosthenes (Basic Implementation)
 long cache_unfriendly_sieve(long n)
 {
     long count = 0;
@@ -24,16 +23,16 @@ long cache_unfriendly_sieve(long n)
     memset(composite, 0, (n + 1) * sizeof(bool));
     long limit = (long)sqrt(n);
 
-    // Mark composites up to sqrt(n)
+    // Marking non-prime numbers in the simplest way
     for (long i = 2; i <= limit; i++)
     {
         if (!composite[i])
         {
-            mark(composite, i * i, i, n);
+            mark(composite, i*i, i, n);
         }
     }
 
-    // Count all primes up to n
+    // Counting the number of prime numbers
     for (long i = 2; i <= n; i++)
     {
         if (!composite[i])
@@ -46,25 +45,23 @@ long cache_unfriendly_sieve(long n)
     return count;
 }
 
+// Cache Friendly Sieve of Eratosthenes (Segmented Implementation)
 long cache_friendly_sieve(long n)
 {
     long limit = (long)sqrt(n);
     long count = 0;
 
-    // Mark composites up to √n
+    // Small sieve up to sqrt(n) to find small primes
     bool *small_composite = calloc(limit + 1, sizeof(bool));
     for (long i = 2; i * i <= limit; i++)
     {
         if (!small_composite[i])
         {
-            for (long j = i * i; j <= limit; j += i)
-            {
-                small_composite[j] = true;
-            }
+            mark(small_composite, i*i, i, limit);
         }
     }
 
-    // Collect small primes
+    // Store small primes for later use
     long *primes = malloc((limit + 1) * sizeof(long));
     long prime_count = 0;
     for (long i = 2; i <= limit; i++)
@@ -78,6 +75,7 @@ long cache_friendly_sieve(long n)
     }
     free(small_composite);
 
+    // Processing in segments for better cache performance
     for (long window_start = limit + 1; window_start <= n; window_start += limit)
     {
         long window_end = window_start + limit - 1;
@@ -90,10 +88,8 @@ long cache_friendly_sieve(long n)
         {
             long p = primes[i];
             long start_idx = ((window_start + p - 1) / p) * p;
-            for (long j = start_idx; j <= window_end; j += p)
-            {
-                segment[j - window_start] = true;
-            }
+
+            mark(segment, (start_idx-window_start), p, (window_end-window_start));
         }
 
         // Count primes in this segment
@@ -109,6 +105,7 @@ long cache_friendly_sieve(long n)
     return count;
 }
 
+// Parallel Sieve using OpenMP (Parallelized Segmented Sieve)
 long parallel_sieve(long n)
 {
     long count = 0;
@@ -118,7 +115,7 @@ long parallel_sieve(long n)
     bool *composite = (bool *)malloc((limit + 1) * sizeof(bool));
     memset(composite, 0, (limit + 1) * sizeof(bool));
 
-    // Sequential part to find initial prime factors
+    // Find small prime factors sequentially
     for (long i = 2; i <= limit; i++)
     {
         if (!composite[i])
@@ -143,14 +140,14 @@ long parallel_sieve(long n)
             if (window_end > n)
                 window_end = n;
 
-            // Calculate starting points for marking
+            // Calculate starting points for marking multiples
             for (long k = 0; k < n_factor; k++)
             {
                 long f = factor[k];
                 marker[k] = (window + f - 1) / f * f - window;
             }
 
-            // Mark composites
+            // Mark non-prime numbers
             for (long k = 0; k < n_factor; k++)
             {
                 mark(local_composite, marker[k], factor[k], window_end - window);
