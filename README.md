@@ -10,12 +10,13 @@ This repository contains lab programs for the Parallel and Distributed Processin
 
 | Program                               | Description                                         | Link to Explanation                                                            |
 | ------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Matrix Multiplication (OpenMP)        | Parallel matrix multiplication using OpenMP         | [Explanation](./Lab_programs/Matrix_mul/Explaination.md)                       |
-| Sieve of Eratosthenes (OpenMP)        | Finding prime numbers using different approaches    | [Explanation](./Lab_programs/Sieve_code/Explaination.md)                       |
-| Monte Carlo Method for PI Calculation | Parallel random sampling for PI approximation       | [Explanation](./Lab_programs/PI_Calculation_using_Monto-Carlo/Explaination.md) |
+| Monte Carlo Method for PI Calculation | Parallel random sampling for PI approximation       | [Explanation](./Lab_programs/PI_Calculation/Explaination.md) |
+| Matrix Multiplication (OpenMP)        | Parallel matrix multiplication using OpenMP         | [Explanation](./Lab_programs/Matrix_Multiply/Explaination.md)                       |
+| Sieve of Eratosthenes (OpenMP)        | Finding prime numbers using different approaches    | [Explanation](./Lab_programs/Sieve_Of_Erastothenes/Explaination.md)                       |
 | MPI Message Passing                   | Demonstrates MPI-based inter-process communication  | [Explanation](./Lab_programs/MPI_message/Explaination.md)                      |
-| Image Processing (OpenMP)             | RGB to modified grayscale conversion in parallel    | [Explanation](./Lab_programs/Image_omp/Explaination.md)                        |
+| Image Processing (OpenMP)             | RGB to modified grayscale conversion in parallel    | [Explanation](./Lab_programs/Image_OMP/Explaination.md)                        |
 | Word Search (OpenMP)                  | Parallel word search in a mixture of sentences      | [Explanation](./Lab_programs/Wordsearch/Explaination.md)                       |
+| Jacobi Iteration (OpenACC)    | Parallel Jacobi Iteration using OpenACC | [Explanation](./Lab_programs/Jacobi/Explanation.md)           |
 | Dynamic Memory Allocation (OpenMP)    | Parallel matrix multiplication using dynamic memory | [Explanation](./Lab_programs/DynamicMemAlloc_MatMul/Explaination.md)           |
 
 ### Prerequisites
@@ -28,25 +29,31 @@ This repository contains lab programs for the Parallel and Distributed Processin
 
 Below is a quick reference for running each program:
 
-1. **Matrix Multiplication (OpenMP)**
+1. **Monte Carlo Method for PI Calculation**
+
+```bash
+mpicc Monto_Carlo_MPI.c -o monto_mpi
+mpirun monto_mpi
+```
+<p style="text-align:center;">or</p>
+
+```bash
+gcc -fopenmp Monto_Carlo_OMP.c -o monto_omp
+./monto_omp
+```
+
+2. **Matrix Multiplication (OpenMP)**
 
 ```bash
 gcc -fopenmp matrix_mul.c -o matrix_mul
 ./matrix_mul
 ```
 
-2. **Sieve of Eratosthenes (OpenMP)**
+3. **Sieve of Eratosthenes (OpenMP)**
 
 ```bash
 gcc -fopenmp sieve_euro.c -o sieve -lm
 ./sieve
-```
-
-3. **Monte Carlo Method for PI Calculation**
-
-```bash
-gcc pi_monte_carlo.c -o pi_monte_carlo
-./pi_monte_carlo 1000000
 ```
 
 4. **MPI Message Passing**
@@ -70,7 +77,13 @@ gcc -fopenmp wordsearch.c -o wordsearch
 ./wordsearch
 ```
 
-7. **Dynamic Memory Allocation (OpenMP)**
+7. **Jacobi Iteration (OpenACC)**
+```bash
+gcc -fopenacc -o jacobi jacobi.c -lm
+./jacobi
+```
+
+8. **Dynamic Memory Allocation (OpenMP)**
 
 ```bash
 gcc -fopenmp dynamic_mem_alloc_matmul.c -o dynamic_mem_alloc_matmul
@@ -95,3 +108,4 @@ gcc -fopenmp dynamic_mem_alloc_matmul.c -o dynamic_mem_alloc_matmul
 ### Contributors
 
 - [Krishnatejaswi S](https://github.com/KTS-o7)
+- [Joshua Elias Alva](https://github.com/joshalva23)

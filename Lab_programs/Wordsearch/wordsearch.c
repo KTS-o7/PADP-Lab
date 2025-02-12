@@ -5,7 +5,8 @@
 #define COUNT 10
 #define FILE_NAME "words.txt"
 
-char search_words[20][COUNT] = {
+char search_words[21][20] = {
+    "student",
     "apple", "banana", "cherry", "date", "elderberry", "fig", "grape", "honeydew", "kiwi", "lemon",
     "mango", "nectarine", "orange", "pear", "plum", "peach", "pineapple", "quince", "raspberry", "strawberry"};
 
